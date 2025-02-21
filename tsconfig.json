@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",          // Output directory for compiled files
+    "rootDir": "src",          // Source directory
+    "module": "CommonJS",      // Use CommonJS for Node.js
+    "target": "ES6",           // Compile to ES6 JavaScript
+    "strict": true             // Enable strict type-checking
+  },
+  "include": ["src"]           // Include all TypeScript files in the `src` folder
+}
