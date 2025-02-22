@@ -1,30 +1,65 @@
-import { ICronFields } from "./utils";
+import {
+  CRON_FIELD_RANGES,
+  getRangeValues,
+  getSteppedValues,
+  ICronFields,
+} from "./utils";
 
 const validateExpression = (
-  fieldName: keyof ICronFields,
+  fieldName: keyof Omit<ICronFields, "command">,
   fieldValue: string
-): string => {
-    if(fieldValue.includes(',')) {
-        return fieldValue
-          .split(",")
-          .map((val) => validateExpression(fieldName, val)).join(' ');
-    }
-    if(fieldValue.includes('/')) {
-        const valWithStep = fieldValue.split('/')
-        if(valWithStep.length > 2) throw new Error(`invalid expression at ${fieldName}`)
-        const [expVal, step] = valWithStep
+): number[] => {
+  if (fieldValue.includes("*")) {
+    const range = CRON_FIELD_RANGES[fieldName];
+    fieldValue = fieldValue.replace("*", `${range.minValue}-${range.maxValue}`);
+  }
+  // Helper function to determine the type of expression
+  const getExpressionType = (value: string): string => {
+    if (value.includes(",")) return "LIST";
+    if (value.includes("/")) return "STEP";
+    if (value.includes("-")) return "RANGE";
+    return "SINGLE";
+  };
 
-        
-    }
-  return "";
+  switch (getExpressionType(fieldValue)) {
+    case "LIST":
+      // Handle comma-separated values (e.g., "1,3,5")
+      const list = fieldValue.split(",");
+      return list.reduce<number[]>((acc, curr) => {
+        acc = [...acc, ...validateExpression(fieldName, curr)];
+        return acc;
+      }, []);
+
+    case "STEP":
+      // Handle step values (e.g., "0-10/2")
+      const valWithStep = fieldValue.split("/");
+      console.log(valWithStep, "----");
+      if (valWithStep.length > 2)
+        throw new Error(`invalid expression at ${fieldName}`);
+      let [expVal, step] = valWithStep;
+      if (!expVal.includes("-")) {
+        expVal += "-";
+      }
+      const rangeVals = validateExpression(fieldName, expVal);
+      return getSteppedValues(rangeVals, parseInt(step));
+    case "RANGE":
+      // Handle range values (e.g., "1-5")
+      const [start, end] = fieldValue.split("-").map(Number);
+      return getRangeValues(fieldName, start, end);
+
+    case "SINGLE":
+    default:
+      // Handle single value (e.g., "5")
+      return [parseInt(fieldValue)];
+  }
 };
 
 const parseCron = (expressioin: string[]): ICronFields => {
   const [minute, hour, dayOfMonth, month, dayOfWeek] = expressioin;
   const result: ICronFields = {} as ICronFields;
 
-  result.minute = validateExpression("minute", minute);
-  result.hour = validateExpression("hour", hour);
+  result.minute = validateExpression("minute", minute).toString();
+  result.hour = validateExpression("hour", hour).toString();
   return result;
 };
 
