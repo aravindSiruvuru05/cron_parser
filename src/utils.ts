@@ -1,3 +1,9 @@
+export interface ITestCase {
+  field: keyof Omit<ICronFields, "command">;
+  value: string;
+  expected: any;
+}
+
 // Custom error class for cron validation errors.
 export class CronValidationError extends Error {
   constructor(message: string) {

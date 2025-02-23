@@ -1,10 +1,18 @@
 {
   "compilerOptions": {
-    "outDir": "dist",          // Output directory for compiled files
-    "rootDir": "src",          // Source directory
-    "module": "CommonJS",      // Use CommonJS for Node.js
-    "target": "ES6",           // Compile to ES6 JavaScript
-    "strict": true             // Enable strict type-checking
+    "target": "ES6",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "resolveJsonModule": true
   },
-  "include": ["src"]           // Include all TypeScript files in the `src` folder
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
