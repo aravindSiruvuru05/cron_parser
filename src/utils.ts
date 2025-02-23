@@ -1,3 +1,10 @@
+// Custom error class for cron validation errors.
+export class CronValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CronValidationError";
+  }
+}
 export interface ICronFields {
   minute: string;
   hour: string;
@@ -11,7 +18,10 @@ interface IRange {
   maxValue: number;
 }
 
-export const CRON_FIELD_RANGES: Record<keyof Omit<ICronFields, "command">, IRange> = {
+export const CRON_FIELD_RANGES: Record<
+  keyof Omit<ICronFields, "command">,
+  IRange
+> = {
   minute: { minValue: 0, maxValue: 59 },
   hour: { minValue: 0, maxValue: 23 },
   dayOfMonth: { minValue: 1, maxValue: 31 },
@@ -30,7 +40,7 @@ export const getRangeValues = (
   const isMaxValid = max && max <= cronFieldRange.maxValue;
 
   if (isMinValid && isMaxValid) {
-    for (let i = cronFieldRange.minValue; i <= cronFieldRange.maxValue; i++) {
+    for (let i = min; i <= max; i++) {
       vals.push(i);
     }
   } else if (isMinValid) {
