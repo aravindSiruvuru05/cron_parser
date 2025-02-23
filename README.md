@@ -23,7 +23,7 @@ This is a TypeScript application that parses a cron string and prints a human-re
     3. npm start "exp_and_command"
 
     Example: 
-         npm start "*/15 1,10/2 1,15 * 1-5,6/1 /usr/bin/find"  
+         npm start "*/15 1,10/2 1,15 * 1-3,6/2 /usr/bin/process"  
          
          provided argument expands to: minute hour dayofmonth month dayofweek command
    ```

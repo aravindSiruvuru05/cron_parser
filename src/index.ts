@@ -14,7 +14,8 @@ const runCronParser = (): void => {
   const argParts = args[0].trim().split(/\s+/);
   if (argParts.length != 6) {
     console.error(
-      `Error: Invalid arguments. Expected at least 6 parts (5 cron fields and a command), but got ${argParts.length}.`
+      `Error: Invalid arguments. Expected at least 6 parts (5 cron fields and a command), but got ${argParts.length}.
+       Example: npm start "*/15 1,10/2 1,15 * 1-3,6/2 /usr/bin/process" `
     );
     process.exit(1);
   }
